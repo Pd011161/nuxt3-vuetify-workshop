@@ -1,0 +1,2260 @@
+*************************************************
+Nuxt3-Vuefiy3-TS-Workshop
+*************************************************
+Step 1: Create new nuxt3 project
+—
+npx nuxi init nuxt3-vuetify-workshop
+
+Step 2: Install sass dependencie
+—-
+npm install sass@1.56.1
+
+Step 3: Install Vuetify 3 dependencie
+—
+npm install vuetify@3.0.2
+
+Step 4: Install @mdi/font dependencie
+—
+npm install @mdi/font@7.0.96
+
+Step 5: Create assets/scss/style.scss
+—
+@use "vuetify/styles";
+
+Step 6: Config nuxt.config.ts
+—
+// https://v3.nuxtjs.org/api/configuration/nuxt.config
+export default defineNuxtConfig({
+  ssr: false,
+  build: {
+    transpile: ["vuetify"],
+  },
+  css: ["@/assets/scss/style.scss"],
+  vite: {
+    define: {
+      "process.env.DEBUG": false,
+    },
+  },
+});
+
+Step 7: Create plugins/vuetify.ts
+—
+import { createVuetify } from "vuetify";
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import "@mdi/font/css/materialdesignicons.css";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+
+export default defineNuxtPlugin(nuxtApp => {
+    const vuetify = createVuetify({
+      components,
+      directives,
+      icons: {
+        defaultSet: 'mdi',
+        aliases,
+        sets: {
+            mdi,
+        }
+      },
+      theme: {
+          defaultTheme: 'light',
+          themes: {
+            light: {
+              colors: {
+                primary: "#1e88e5",
+                info: "#03c9d7",
+                success: "#05b187",
+                accent: "#fc4b6c",
+                warning: "#fec90f",
+                error: "#fc4b6c",
+                secondary: "#0cb9c5",
+              },
+            },
+            dark: {
+              colors: {
+                primary: "#1e88e5",
+                info: "#03c9d7",
+                success: "#05b187",
+                accent: "#fc4b6c",
+                warning: "#fec90f",
+                error: "#fc4b6c",
+                secondary: "#0cb9c5",
+              },
+            },
+          },
+      },
+    })
+  
+    nuxtApp.vueApp.use(vuetify)
+})
+
+Step 8: Update app.vue
+—
+<template>
+  <div>
+    <v-card class="mx-auto" width="400" prepend-icon="mdi-home">
+      <template v-slot:title>
+        This is a title
+      </template>
+      <v-card-text>
+        This is content
+      </v-card-text>
+      <v-card-actions>
+        <v-btn variant="text" color="teal-accent-4">
+          Learn More
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </div>
+</template>
+
+Step 9: Run project in dev mode
+—-
+npm run dev
+
+Step 10: Create header component
+—
+npx nuxi add component "landing/Header"
+
+then add this code
+—
+<script setup lang="ts">
+
+  import headerItems from './headerItems'
+  import { useDisplay } from "vuetify"
+
+  const drawer = ref(false)
+  const innerW = window.innerWidth;
+  const { mdAndUp, mdAndDown } = useDisplay()
+
+  onMounted(() => {
+    if (innerW > 950) {
+      drawer.value = false
+    }
+  })
+
+  const headerMenu = ref(headerItems)
+
+</script>
+
+<template>
+
+    <div>
+      <v-app-bar app color="blue accent-4" dark elevation="0">
+        <v-app-bar-nav-icon @click="drawer = !drawer" class="d-block d-sm-none"></v-app-bar-nav-icon>
+        <NuxtLink to="/" class="d-block d-lg-none brand ml-8">NuxtPress</NuxtLink>
+        <v-container>
+          <v-row>
+
+            <v-col class="d-none d-lg-block" sm="12" md="12" lg="4">
+              <v-toolbar-title>
+                <NuxtLink to="/" class="d-flex brand mt-2">NuxtPress</NuxtLink>
+              </v-toolbar-title>
+            </v-col>
+
+            <v-col class="d-none d-sm-block text-end" sm="12" md="12" lg="8">
+                <v-btn class="menu" v-for="(item, i) in headerMenu" :to="item.to">{{ item.title }}</v-btn>
+                <v-btn class="menu" icon><v-icon>mdi-magnify</v-icon></v-btn>
+            </v-col>
+
+          </v-row>
+        </v-container>
+      </v-app-bar>
+      
+      <!-- Mobile Menu -->
+      <v-navigation-drawer
+        left
+        elevation="10"
+        app
+        :temporary="mdAndUp"
+        v-model="drawer"
+        expand-on-hover
+      >
+        <v-list>
+          <v-list-item v-for="(item, i) in headerMenu" :to="item.to" class="mb-1">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      
+    </div>
+
+</template>
+
+<style scoped>
+  .brand {
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .menu{
+    font-size: 16px;
+  }
+</style>
+
+Create file headerItems.ts in components/landing/headerItems.ts
+—
+then add this code
+—
+export default [
+    {
+      title: "หน้าหลัก",
+      to: "/",
+    },
+    {
+      title: "เกี่ยวกับเรา",
+      to: "/about",
+    },
+    {
+      title: "บล็อก",
+      to: "/blog",
+    },
+    {
+      title: "ติดต่อเรา",
+      to: "/contact",
+    },
+    {
+      title: "เข้าสู่ระบบ",
+      to: "/auth/login",
+    },
+  ]
+
+Step 11: Create component footer
+—
+npx nuxi add component "landing/Footer"
+
+then add this code
+—
+<template>
+    <v-footer>
+        <v-container>
+            <v-row class="py-0">
+                <v-col cols="12" sm="6" md="6" lg="3" class="px-0">
+                    <h4 class="font-weight-bold font-18 mt-5">Address</h4>
+                    <p class="mt-2 mb-0">3/499 Ladprao Wanghin 68 Bangkok 10230</p>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" lg="3" class="px-0">
+                    <h4 class="font-weight-bold font-18 mt-5">Phone</h4>
+                    <p class="mt-2 mb-0">Reception : +66 02 570-8449</p>
+                    <p>Office : +66 02 570-8449</p>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" lg="3" class="px-0">
+                    <h4 class="font-weight-bold font-18 mt-5">Email</h4>
+                    <p class="mt-2 mb-0">
+                    Office : <a class="dark-link" href="/">contact@itgenius.co.th</a>
+                    </p>
+                    <p>
+                    Site :
+                    <a class="dark-link" href="https://www.itgenius.co.th/"
+                        >itgenius.co.th</a
+                    >
+                    </p>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" lg="3" class="px-0">
+                    <h4 class="font-weight-bold font-18 mt-5">Social</h4>
+                    <div class="social-icons mt-2">
+                        <a href="#" class="ml-0">
+                            <v-icon icon="mdi mdi-facebook" size="24"></v-icon>
+                        </a>
+                        <a href="#">
+                            <v-icon icon="mdi mdi-twitter" size="24"></v-icon>
+                        </a>
+                        <a href="#">
+                            <v-icon icon="mdi mdi-youtube" size="24"></v-icon>
+                        </a>
+                        <a href="#">
+                            <v-icon icon="mdi mdi-instagram" size="24"></v-icon>
+                        </a>
+                    </div>
+                </v-col>
+            </v-row>
+            
+            <div class="footer-bottom-bar font-14 mt-10 mb-5">
+                <v-row>
+                    <v-col sm="12" md="6" lg="6" class="px-0 py-0">
+                        <p>All Rights Reserved by<a href="https://www.itgenius.co.th/" class="link">itgenius.co.th</a></p>
+                    </v-col>
+                    <v-col sm="12" md="6" lg="6" class="px-0 py-0 text-md-right">
+                        <a href="#" class="link px-0">Terms</a>
+                        <a href="#" class="link px-4">Legal</a>
+                        <a href="#" class="link px-4">Privacy</a> 
+                    </v-col>
+                </v-row>
+            </div>
+
+        </v-container>
+    </v-footer>
+</template>
+
+<style scoped>
+.v-footer {
+    background: lightslategrey;
+    color: #fff;
+}
+
+a:link, a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+.social-icons a {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 100%;
+    margin: 0 5px;
+    transition: 0.2s ease-in;
+    color: #fff;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    transform: translate3d(0px, -5px, 0px);
+    background: #1e88e5;
+    color: #fff;
+}
+
+.footer-bottom-bar {
+    padding-top: 10px;
+    margin-top: 20px;
+}
+</style>
+
+
+Step 12: Create Layout "default"
+—
+npx nuxi add layout default
+
+then add this code
+—
+<script setup lang="ts">
+
+  import Header from "~/components/landing/Header.vue"
+  import Footer from "~/components/landing/Footer.vue"
+
+</script>
+
+<template>
+  <div>
+    <v-app>
+      <Header />
+        <slot />
+      <Footer />
+    </v-app>
+  </div>
+</template>
+
+<style>
+  .v-row {
+    margin: 0px !important
+  }
+</style>
+
+Step 13: Create index page
+—
+npx nuxi add page index
+
+then add this code
+—-
+<script lang="ts" setup>
+    useHead({
+        title: 'หน้าหลัก',
+        meta: [
+            { 
+            name: 'keywords', 
+            content: 'หน้าหลัก, Nuxt 3, Backend'
+            },
+            {
+            name: 'Description',
+            content: 'หน้าหลัก Nuxt 3,  IT Genius Engineering'
+            }
+        ]
+    })
+</script>
+
+<template>
+  <div class="banner-wrapper">
+    <v-container>
+      <v-row>
+        <v-col cols="12" md="7" lg="6" class="d-block d-lg-flex align-center">
+          <div class="text-center text-md-left">
+            <h1 class="banner-title font-weight-bold text-white">
+              เว็บไซต์ที่สร้างด้วย Nuxt
+            </h1>
+            <h4 class="banner-subtitle text-white font-weight-regular">
+              สร้างด้วย Nuxt 3 กับ Vuetify 3 สำหรับเนื้อหาประเทภบล็อกและบทความ
+            </h4>
+            <div class="mt-8 pt-2">
+              <v-btn
+                color="success"
+                class="btn-custom-lg"
+                target="_blank"
+                href="https://www.itgenius.co.th"
+                elevation="0"
+              >
+                เริ่มต้นใช้งาน
+              </v-btn>
+            </div>
+          </div>
+        </v-col>
+        <v-col cols="12" md="5" lg="6">
+          <v-img
+            src="/images/landingpage/banner-img.png"
+            alt="banner"
+            class="heroimg mt-8"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+
+  <v-row justify="center">
+      <v-col cols="12" sm="10" md="9" lg="7">
+        <div class="text-center my-10">
+          <h2 class="ui-title font-weight-bold mb-4">Nuxt Press</h2>
+          <p>
+            Here you can check Demos we created you can easily use it. Its
+            quite easy to Create your own dream website & dashboard in
+            No-time.
+          </p>
+        </div>
+      </v-col>
+  </v-row>
+
+  <div class="banner1-component">
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" md="7" lg="6" class="d-flex align-center">
+          <div class="text-center text-md-left">
+            <v-chip small class="bg-dark" text-color="white">
+              Creating Brands
+            </v-chip>
+            <h2
+              class="
+                banner1-title
+                font-weight-bold
+                text-uppercase
+                text-white
+              "
+            >
+              ONE BILLON PEOPLE USE FACEBOOK
+            </h2>
+            <p class="text-white op-8 font-weight-regular">
+              Pellentesque vehicula eros a dui pretium ornare. Phasellus
+              congue vel quam nec luctus.In accumsan at eros in dignissim.
+              Cras sodales nisi nonn accumsan.
+            </p>
+            <div class="mt-16 pt-2">
+              <v-btn
+                nuxt
+                large
+                rounded
+                to="/"
+                class="btn-custom-md"
+                depressed
+                elevation="0"
+              >
+                Do you Need Help ?
+              </v-btn>
+            </div>
+          </div>
+        </v-col>
+        <v-col cols="12" md="5" lg="5">
+          <v-img src="/images/banner/banner1.jpg" alt="banner"/>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+
+</template>
+
+<style scoped>
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.banner-title {
+  font-size: 42px;
+  line-height: 54px;
+  margin: 20px 0 15px;
+}
+
+.banner-subtitle {
+  font-size: 21px;
+}
+
+.banner-wrapper {
+  background: #2196F3;
+  padding: 40px 0 20px;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-custom-lg{
+  font-size: 18px;
+  padding: 10px 20px;
+  height: auto;
+}
+
+.heroimg {
+  animation: bounce 2s infinite;
+}
+
+@media (max-width: 767px) {
+  .banner-title {
+    font-size: 29px;
+    line-height: 40px;
+  }
+  .banner-wrapper {
+    padding: 90px 0 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .banner-subtitle {
+    margin-right: 150px;
+  }
+}
+
+/* Banner1 */
+
+.banner1-component {
+  padding: 60px 0;
+  background-color: #fdbfa8;
+}
+
+.banner1-title {
+  font-size: 48px;
+  line-height: 50px;
+  margin: 20px 0 15px;
+}
+
+@media (max-width: 991px) {
+  .banner1-component .banner1-title {
+    font-size: 35px;
+  }
+}
+
+</style>
+
+config nuxt.config.ts
+——
+app: {
+        head: {
+          htmlAttrs: {
+            lang: 'en'
+          },
+          bodyAttrs: {
+            class: 'demo'
+          },
+          charset: 'utf-8',
+          titleTemplate: '%s - Nuxt 3 Vuetify',
+          meta: [
+            { 
+              name: 'viewport', 
+              content: 'width=device-width, initial-scale=1, maximum-scale=5'
+            },
+            {
+              name: 'author',
+              content: "IT Genius Engineering Ltd., Thailand"
+            },
+          ]
+        }
+    },
+
+Step 14: Create page about
+—
+npx nuxi add page about
+
+then add this code
+—
+<script lang="ts" setup>
+    useHead({
+        title: 'เกี่ยวกับเรา',
+        meta: [
+            { 
+            name: 'keywords', 
+            content: 'เกี่ยวกับเรา, Nuxt 3, Backend'
+            },
+            {
+            name: 'Description',
+            content: 'เกี่ยวกับเรา Nuxt 3,  IT Genius Engineering'
+            }
+        ]
+    })
+</script>
+
+<template>
+  <div class="wrapper">
+        <v-row justify="center">
+        <v-col cols="12" sm="10" md="9" lg="7">
+            <div class="text-center">
+            <h2 class="ui-title font-weight-bold text-white mb-4">เกี่ยวกับเรา</h2>
+            <p class="text-white">
+                Here you can check Demos we created you can easily use it. Its
+                quite easy to Create your own dream website & dashboard in
+                No-time.
+            </p>
+            </div>
+        </v-col>
+        </v-row>
+    </div>
+
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" md="6">
+          <v-card elevation="0">
+            <v-card-text>
+              <div class="icon-round bg-light-info">
+                <i class="mdi mdi-star"></i>
+              </div>
+              <h5 class="font-weight-medium font-18">โซลูชั่นสำเร็จรูป</h5>
+              <p class="mt-10 mb-8">
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit, praesentium esse tenetur corrupti ducimus porro enim laudantium iste fugiat deleniti.
+              </p>
+              <a
+                href="#"
+                class="
+                  text-themecolor
+                  linking
+                  text-decoration-none
+                  d-flex
+                  align-center
+                "
+              >
+                ดูรายละเอียด <i class="mdi mdi-arrow-right"></i>
+              </a>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card elevation="0">
+            <v-card-text>
+              <div class="icon-round bg-light-info">
+                <i class="mdi mdi-check-circle"></i>
+              </div>
+              <h5 class="font-weight-medium font-18">เทคนิคทรงพลัง</h5>
+              <p class="mt-10 mb-8">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit, praesentium esse tenetur corrupti ducimus porro enim laudantium iste fugiat deleniti.
+              </p>
+              <a
+                href="#"
+                class="
+                  text-themecolor
+                  linking
+                  text-decoration-none
+                  d-flex
+                  align-center
+                "
+              >
+              ดูรายละเอียด<i class="mdi mdi-arrow-right"></i>
+              </a>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-row justify="center" class="bg-primary">
+      <v-col cols="12" sm="10" md="9" lg="7">
+        <div class="text-center my-10">
+          <h2 class="ui-title font-weight-bold">บริการจากเรา</h2>
+          <p>
+            Here you can check Demos we created you can easily use it. Its
+            quite easy to Create your own dream website & dashboard in
+            No-time.
+          </p>
+        </div>
+      </v-col>
+    </v-row>
+
+    <div class="formbanner1-component">
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" md="7" lg="5" class="d-flex align-center">
+            <div class="text-center text-md-left">
+              <h2 class="formbanner1-title font-weight-bold">
+                Give your Business Real boost Now!
+              </h2>
+              <p class="mt-16 pt-4">
+                To accomplish great things, we must not only act, but also
+                dream; not only plan, but also believe.
+              </p>
+              <div class="mt-16 pt-2">
+                <form>
+                  <div class="stylish-input-group">
+                    <v-text-field
+                      placeholder="Enter Email Address"
+                      solo
+                    ></v-text-field>
+                    <v-btn
+                      rounded
+                      color="primary"
+                      elevation="0"
+                      class="text-uppercase font-weight-medium"
+                      dark
+                    >
+                      Get Started
+                    </v-btn>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </v-col>
+          <v-col cols="12" md="5" lg="6" class="ml-auto">
+            <v-img src="/images/form-banner/form-banner1.png" alt="banner"/>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+</template>
+
+<style scoped>
+    .ui-title {
+        font-size: 32px;
+    }
+
+    .font-18 {
+        font-size: 18px;
+    }
+    
+    .icon-round{
+        background-color: blueviolet;
+        color: #fff;
+        display: inline-block;
+        padding:30px 20px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: 20px 0px;
+    }
+
+    .bg-light-info{
+        font-size: 40px;
+    }
+
+    .wrapper {
+        background: #2196F3;
+        padding: 40px 0 20px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .formbanner1-component {
+      background-color: #e9f3f8;
+    }
+
+    .formbanner1-title {
+      font-size: 48px;
+      line-height: 1;
+      letter-spacing: -1px;
+      margin: 20px 0 15px;
+    }
+
+</style>
+
+Step 15: Create page blog
+—
+npx nuxi add page blog
+
+then add this code
+—
+<script lang="ts" setup>
+    useHead({
+        title: 'บล็อก',
+        meta: [
+            { 
+            name: 'keywords', 
+            content: 'บล็อก, Nuxt 3, Backend'
+            },
+            {
+            name: 'Description',
+            content: 'บล็อก Nuxt 3,  IT Genius Engineering'
+            }
+        ]
+    })
+</script>
+
+<template>
+    <div class="mb-5">
+
+        <div class="wrapper">
+            <v-row justify="center">
+            <v-col cols="12" sm="10" md="9" lg="7">
+                <div class="text-center">
+                <h2 class="ui-title font-weight-bold text-white mb-4">บล็อกล่าสุด</h2>
+                <p class="text-white">
+                    You can relay on our amazing features list and also our customer services will be great experience for you without doubt and in no-time
+                </p>
+                </div>
+            </v-col>
+            </v-row>
+        </div>
+
+        <v-container>
+        <v-row class="mt-13" justify="center">
+          <v-col cols="12" md="6" lg="4">
+            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
+              <div class="position-relative mb-5">
+                <a href="#">
+                  <v-img src="/images/blog/img1.jpg"
+                    alt="blog"
+                    class="blog-img"
+                  />
+                </a>
+                <div class="date-badge bg-info-grediant">
+                  Oct <span>23</span>
+                </div>
+              </div>
+              <div class="pa-5">
+                <a
+                  href="#"
+                  class="
+                    blog-title
+                    text-decoration-none
+                    font-weight-medium font-18
+                  "
+                  >Learn from small things to create something bigger thing in blog.</a
+                >
+                <p class="mt-10 mb-10">
+                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
+                </p>
+                <a
+                  href="#"
+                  class="
+                    text-themecolor
+                    linking
+                    text-decoration-none
+                    d-flex
+                    align-center
+                  "
+                >
+                  อ่านต่อ  &nbsp; <i class="mdi mdi-arrow-right"></i>
+                </a>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
+              <div class="position-relative mb-5">
+                <a href="#">
+                  <v-img src="/images/blog/img2.jpg"
+                    alt="blog"
+                    class="blog-img"
+                  />
+                </a>
+                <div class="date-badge bg-info-grediant">
+                  Oct <span>23</span>
+                </div>
+              </div>
+              <div class="pa-5">
+                <a
+                  href="#"
+                  class="
+                    blog-title
+                    text-decoration-none
+                    font-weight-medium 
+                    font-18
+                  "
+                  >New Seminar on Newest Food Recipe from World’s Best</a
+                >
+                <p class="mt-10 mb-10">
+                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
+                </p>
+                <a
+                  href="#"
+                  class="
+                    text-themecolor
+                    linking
+                    text-decoration-none
+                    d-flex
+                    align-center
+                  "
+                >
+                  อ่านต่อ  &nbsp;<i class="mdi mdi-arrow-right"></i>
+                </a>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
+              <div class="position-relative mb-5">
+                <a href="#">
+                  <v-img src="/images/blog/img3.jpg"
+                    alt="blog"
+                    class="blog-img"
+                  />
+                </a>
+                <div class="date-badge bg-info-grediant">
+                  Oct <span>23</span>
+                </div>
+              </div>
+              <div class="pa-5">
+                <a
+                  href="#"
+                  class="
+                    blog-title
+                    text-decoration-none
+                    font-weight-medium 
+                    font-18
+                  "
+                  >You should have eagle’s eye on new trends and techonogies</a
+                >
+                <p class="mt-10 mb-10">
+                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
+                </p>
+                <a
+                  href="#"
+                  class="
+                    text-themecolor
+                    linking
+                    text-decoration-none
+                    d-flex
+                    align-center
+                  "
+                >
+                  อ่านต่อ  &nbsp; <i class="mdi mdi-arrow-right"></i>
+                </a>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+
+    </div>
+</template>
+
+<style scoped>
+    .ui-title {
+        font-size: 32px;
+    }
+
+    .font-18{
+        font-size: 18px;
+    }
+
+    .wrapper {
+        background: #2196F3;
+        padding: 40px 0 20px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .blog-card {
+        transition: 0.2s ease-in;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .blog-title {
+        color: #263238 !important;
+        line-height: 22px;
+        font-weight: bold;
+    }
+
+    .blog-title:hover {
+        color: #607df9 !important;
+    }
+
+
+</style>
+
+Step 16: Create page contact
+—
+npx nuxi add page contact
+
+then add this code
+—
+<script lang="ts" setup>
+
+    const data = ref({
+        name: "",
+        email: "",
+    })
+
+    useHead({
+        title: 'ติดต่อเรา',
+        meta: [
+            { 
+            name: 'keywords', 
+            content: 'ติดต่อเรา, Nuxt 3, Backend'
+            },
+            {
+            name: 'Description',
+            content: 'ติดต่อเรา Nuxt 3,  IT Genius Engineering'
+            }
+        ]
+    })
+</script>
+
+<template>
+    <div class="mb-5">
+
+        <div class="wrapper">
+            <v-row justify="center">
+                <v-col cols="12" sm="10" md="9" lg="7">
+                    <div class="text-center">
+                    <h2 class="ui-title font-weight-bold text-white mb-4">ติดต่อเรา</h2>
+                    <p class="text-white">
+                        Here you can check Demos we created you can easily use it. Its
+                        quite easy to Create your own dream website & dashboard in
+                        No-time.
+                    </p>
+                    </div>
+                </v-col>
+            </v-row>
+        </div>
+
+        <v-container>
+        <v-row justify="center">
+          <v-col cols="12" sm="12" md="12" lg="8">
+            <div>
+              <h2 class="font-weight-medium mb-5">
+                ฝากข้อความถึงเรา
+              </h2>
+              <form>
+                <v-row class="mt-15">
+                  <v-col cols="12" md="6" class="py-0 pl-0">
+                    <v-text-field
+                      label="Name"
+                      outlined
+                      v-model="data.name"
+                      placeholder="Name"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6" class="py-0 pl-0">
+                    <v-text-field
+                      label="Email"
+                      outlined
+                      type="email"
+                      v-model="data.email"
+                      placeholder="Email"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" class="py-0 pl-0">
+                    <v-textarea
+                      name="message"
+                      outlined
+                      label="Message"
+                      rows="3"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+                <v-btn
+                  nuxt
+                  to="/contact"
+                  class="btn-custom-md btn-danger-gradient"
+                  outlined
+                  color="error"
+                  elevation="0"
+                >
+                  ส่งข้อมูล
+                </v-btn>
+              </form>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="12" md="12" lg="4">
+            <div class="primary">
+              <h2 class="detail-title font-weight-medium">
+                สถาบันไอทีจีเนียส
+              </h2>
+              <p class="mt-5">เลขที่ 3/449 Ladprao 68</p>
+              <p class="mb-5">info@itgenius.com</p>
+              <p class="mt-5">เลขที่ 5 Ladprao Ave.</p>
+              <p>Ladprao Road, BKK 10230</p>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+</template>
+
+<style scoped>
+    .wrapper {
+        background: #2196F3;
+        padding: 40px 0 20px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .ui-title {
+        font-size: 32px;
+    }
+
+    .font-18 {
+        font-size: 18px;
+    }
+
+    .contact-detail-card .detail-title {
+        line-height: 36px;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .contact-title {
+        margin: 20px 0 15px;
+        line-height: 26px;
+        font-size: 21px;
+    }
+
+    .btn-custom-md {
+        padding: 15px 35px !important;
+        height: auto;
+    }
+
+</style>
+
+Step 17: Create layout auth
+—
+npx nuxi add layout auth
+
+then add this code
+—
+<script setup lang="ts">
+</script>
+<template>
+  <v-app
+    theme="light"
+    class="verticalLayout"
+  >
+    <slot />
+  </v-app>
+</template>
+
+Step 18: Create page login
+—
+npx nuxi add page "auth/login"
+
+then add this code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "auth",
+  })
+  
+  useHead({
+    title: 'เข้าสู่ระบบ',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'เข้าสู่ระบบ, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'เข้าสู่ระบบ Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+
+const checkbox = ref(false);
+const valid = ref(true);
+const show1 = ref(false);
+const password = ref("");
+const email = ref("");
+const passwordRules = ref([
+  (v: string) => !!v || "ต้องป้อนรหัสผ่าน",
+  (v: string) =>
+    (v && v.length > 8) || "รหัสผ่านต้องไม่น้อยกว่า 8 หลัก",
+]);
+const emailRules = ref([
+  (v: string) => !!v || "ต้องป้อนอีเมล์",
+  (v: string) => /.+@.+\..+/.test(v) || "รูปแบบอีเมล์ไม่ถูกต้อง",
+]);
+</script>
+
+<template>
+  <v-container id="login" class="fill-height justify-center" tag="section">
+    <v-row justify="center" class="h-100vh" align="center">
+      <v-col sm="12" md="12" lg="12" xl="7">
+        <v-card elevation="10">
+          <v-row>
+            <v-col
+              lg="7"
+              class="bg-primary d-none d-md-flex align-center justify-center"
+            >
+              <div class="d-none d-sm-block">
+                <div class="d-flex align-center pa-10 v-col-8">
+                  <div>
+                    <h2 class="text-h4 text-white font-weight-medium">
+                      การออกแบบที่ไม่มีสิ้นสุด เราสร้างมันด้วยรักและใส่ใจ
+                    </h2>
+                    <h6
+                      class="text-subtitle-1 mt-4 text-white font-weight-regular"
+                    >
+                    ไอทีจีเนียสช่วยให้นักพัฒนาได้เรียนรู้เพิ่มเติม ผ่านหลักสูตรการอบรมที่หลากหลาย
+                    ครอบคลุมทุกด้าน ทั้งออกแบบ โปรแกรมมิ่ง ฐานข้อมูล โมบายแอพ ตลอดจน devops และอื่นๆ
+                    </h6>
+                    <v-btn
+                      class="mt-6 text-capitalize"
+                      size="x-large"
+                      variant="outlined"
+                      color="white"
+                      >เรียนรู้เพิ่มเติม</v-btn
+                    >
+                  </div>
+                </div>
+              </div>
+            </v-col>
+            <v-col lg="5">
+              <div class="pa-7 pa-sm-12">
+                <p class="text-center"><img src="/images/logos/dark-logo-icon.svg" /></p>
+                <h2 class="font-weight-bold text-center mt-4 text--darken-2">เข้าสู่ระบบ</h2>
+                <h6 class="text-subtitle-1 mb-7 text-center">
+                  ยังไม่เป็นสมาชิกใช่มั้ย ?
+                  <v-btn to="/auth/register" variant="plain"
+                    >ลงทะเบียน</v-btn
+                  >
+                </h6>
+
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="E-mail"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="password"
+                    :counter="10"
+                    :rules="passwordRules"
+                    label="Password"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                    type="password"
+                  ></v-text-field>
+
+                  <div class="d-block d-sm-flex align-center mb-4 mb-sm-0">
+                    <v-checkbox
+                      v-model="checkbox"
+                      :rules="[(v) => !!v || 'ต้องยอมรับเงื่อนไขการใช้งานก่อนไปต่อ!']"
+                      label="จำฉันไว้ ?"
+                      required
+                      hide-details
+                    ></v-checkbox>
+                    <div class="ml-auto">
+                      <nuxt-link to="/auth/forgotpass" class="text-primary text-decoration-none">ฉันลืมรหัสผ่าน</nuxt-link>
+                    </div>
+                  </div>
+                  <v-btn
+                    color="primary"
+                    to="/backend/dashboard"
+                    block
+                    class="py-6"
+                    size="x-large"
+                    submit
+                    >เข้าสู่ระบบ</v-btn
+                  >
+                  <div class="text-center mt-6"><v-btn variant="text" class="mb-4" to="/"><i class="mdi mdi-arrow-left"></i> กลับหน้าหลัก</v-btn></div>
+                </v-form>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+Step 19: Create page register
+—
+npx nuxi add page "auth/register"
+
+then add this code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "auth",
+  })
+
+  useHead({
+    title: 'ลงทะเบียน',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'ลงทะเบียน, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'ลงทะเบียน Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+
+  const checkbox = ref(false);
+  const valid = ref(true);
+  const show1 = ref(false);
+  const password = ref("");
+  const email = ref("");
+  const passwordRules = ref([
+    (v: string) => !!v || "ต้องป้อนรหัสผ่าน",
+    (v: string) =>
+    (v && v.length >= 8) || "รหัสผ่านต้องไม่น้อยกว่า 8 หลัก",
+  ]);
+  const emailRules = ref([
+    (v: string) => !!v || "ต้องป้อนอีเมล์",
+    (v: string) => /.+@.+\..+/.test(v) || "รูปแบบอีเมล์ไม่ถูกต้อง",
+  ]);
+  const fname = ref("");
+  const fnameRules = ref([
+    (v: string) => !!v || "ต้องป้อนชื่อสกุล",
+    (v: string) =>
+      (v && v.length >= 3) || "ชื่อต้องไม่น้อยกว่า 8 ตัวอักษร",
+  ])
+
+</script>
+
+<template>
+  <v-container id="login" class="fill-height justify-center" tag="section">
+    <v-row justify="center" class="h-100vh" align="center">
+      <v-col sm="12" md="12" lg="12" xl="7">
+        <v-card elevation="10">
+          <v-row>
+            <v-col lg="5" class="pr-0">
+              <div class="pa-7 pa-sm-12">
+                <p class="text-center"><img src="/images/logos/dark-logo-icon.svg" /></p>
+                <h2
+                  class="font-weight-bold text-center mt-4 blue-grey--text text--darken-2"
+                >
+                  ลงทะเบียน
+                </h2>
+                <h6
+                  class="text-subtitle-1 text-center text-grey-darken-1"
+                >
+                  เป็นสมาชิกอยู่แล้วใช่มั้ย ?
+                  <v-btn to="/auth/login" variant="plain"
+                    >เข้าสู่ระบบ</v-btn
+                  >
+                </h6>
+
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                  action="/pages/boxedlogin"
+                >
+                  <v-text-field
+                    v-model="fname"
+                    :rules="fnameRules"
+                    label="ชื่อ-สกุล"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="อีเมล์"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="password"
+                    :counter="8"
+                    :rules="passwordRules"
+                    label="รหัสผ่าน"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                    type="password"
+                  ></v-text-field>
+
+                  <div class="d-block d-sm-flex align-center mb-4 mb-sm-0">
+                    <v-checkbox
+                      v-model="checkbox"
+                      :rules="[(v) => !!v || 'You must agree to continue!']"
+                      label="ฉันยอมรับเงื่อนไขการใช้งาน"
+                      required
+                      hide-details
+                    ></v-checkbox>
+                  </div>
+                  <v-btn color="primary" block class="mr-4 py-6" size="x-large" submit
+                    >ลงทะเบียน</v-btn
+                  >
+                </v-form>
+
+                <div class="text-center mt-6">
+                  <div class="d-flex align-center justify-center gap-2">
+                    <v-btn icon color="secondary">
+                      <v-icon>mdi-twitter</v-icon>
+                    </v-btn>
+                    <v-btn icon color="primary">
+                      <v-icon>mdi-github</v-icon>
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+            </v-col>
+            <v-col
+              lg="7"
+              class="bg-primary d-none d-md-flex align-center justify-center"
+            >
+              <div class="d-none d-sm-block">
+                <div class="d-flex align-center pa-10">
+                  <div>
+                    <h2 class="text-h4 text-white font-weight-medium">
+                      การออกแบบที่ไม่มีสิ้นสุด เราสร้างมันด้วยรักและใส่ใจ
+                    </h2>
+                    <h6
+                      class="text-subtitle-1 mt-4 text-white font-weight-regular"
+                    >
+                      ไอทีจีเนียสช่วยให้นักพัฒนาได้เรียนรู้เพิ่มเติม ผ่านหลักสูตรการอบรมที่หลากหลาย
+                      ครอบคลุมทุกด้าน ทั้งออกแบบ โปรแกรมมิ่ง ฐานข้อมูล โมบายแอพ ตลอดจน devops และอื่นๆ
+                    </h6>
+                    <v-btn
+                      class="mt-6 text-capitalize"
+                      size="x-large"
+                      variant="outlined"
+                      color="white"
+                      >เรียนรู้เพิ่มเติม</v-btn
+                    >
+                  </div>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<style scoped>
+
+</style>
+
+Step 20: Create forgotpass
+—
+npx nuxi add page "auth/forgotpass"
+
+then add this code
+—-
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "auth",
+  })
+  
+  useHead({
+    title: 'ลืมรหัสผ่าน',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'ลืมรหัสผ่าน, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'ลืมรหัสผ่าน Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+
+  const valid = ref(true);
+  const email = ref("");
+  const emailRules = ref([
+    (v: string) => !!v || "ต้องป้อนอีเมล์",
+    (v: string) => /.+@.+\..+/.test(v) || "รูปแบบอีเมล์ไม่ถูกต้อง",
+  ])
+
+</script>
+
+<template>
+  <v-container id="login" class="fill-height justify-center" tag="section">
+    <v-row justify="center" class="h-100vh" align="center">
+      <v-col lg="6" md="8" sm="12" xl="6">
+        <v-card elevation="10">
+          <v-row>
+            <v-col lg="12">
+              <div class="pa-7 pa-sm-12">
+                <p class="text-center"><img src="/images/logos/dark-logo-icon.svg" /></p>
+                <h2 class="font-weight-bold text-center mt-4 text--darken-2">ลืมรหัสผ่าน</h2>
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                  action="/dashboards/analytical"
+                >
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="E-mail"
+                    class="mt-4"
+                    required
+                    variant="outlined"
+                  ></v-text-field>
+                  <v-btn
+                    color="primary"
+                    to="/auth/login"
+                    block
+                    class="py-6 mt-4"
+                    size="x-large"
+                    submit
+                    >ส่งข้อมูล</v-btn
+                  >
+                  <div class="text-center mt-6"><v-btn variant="text" class="mb-4" to="/auth/login"><i class="mdi mdi-arrow-left"></i> กลับหน้าเข้าระบบ</v-btn></div>
+                </v-form>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+การ Custom 404 Error Page
+——
+ใ้ห้ทำการสร้างไฟล์ error.vue วางไว้ที่ root path
+—-
+<script setup lang="ts">
+
+// Page title
+const title = ref("404-ไม่พบหน้าที่เรียก");
+useHead({
+  meta: [{ content: title }],
+  titleTemplate: () => {
+    return "404-ไม่พบหน้าที่เรียก";
+  },
+});
+</script>
+
+<template>
+  <div class="error-main blue-grey lighten-5">
+    <div class="py-12 error-box">
+      <div class="text-center">
+        <h1 class="error-title error--text">404</h1>
+        <h3 class="text-uppercase error-subtitle">ไม่มีหน้าที่เรียก !</h3>
+        <p class="text-grey-darken-1 mt-4 mb-4">
+          หน้าที่คุณเรียกได้หายไป ไม่สามารถเรียกได้
+        </p>
+        <v-btn color="secondary" to="/">กลับหน้าหลัก</v-btn>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+.error-main {
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background: url("/images/background/error-bg.jpg");
+  background-size: cover;
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+.error-box {
+  max-width: 500px;
+}
+.error-title {
+  font-size: 15rem;
+  font-weight: 900;
+  text-shadow: 4px 4px 0 #fff, 6px 6px 0 #343a40;
+  line-height: auto;
+}
+
+@media (max-width: 991px) {
+  .error-title {
+    font-size: 120px;
+    line-height: 120px;
+  }
+}
+
+@media (max-width: 767px) {
+  .error-title {
+    font-size: 40px;
+    line-height: 40px;
+  }
+}
+</style>
+
+
+*************************************************
+Backend
+*************************************************
+
+Step 21: Create sidebar
+—
+npx nuxi add component "backendComponents/sidebar/Sidebar"
+
+Then add this code
+—
+<script setup lang="ts">
+
+import sidebarItems from "./sidebarItems";
+const sidebarMenu = ref(sidebarItems)
+
+</script>
+
+<template>
+  <div>
+    <!-- ---------------------------------------------- -->
+    <!---Navigation -->
+    <!-- ---------------------------------------------- -->
+    <div class="scrollnavbar">
+      <div class="profile">
+        <div class="profile-pic">
+          <v-avatar size="45">
+            <img src="/images/users/sirirat.jpg" width="50" alt="Julia" />
+          </v-avatar>
+        </div>
+        <div class="profile-name">
+          <h5>Julia Roberts</h5>
+        </div>
+      </div>
+      <v-list class="pa-4">
+        <!-- ---------------------------------------------- -->
+        <!---Menu Loop -->
+        <!-- ---------------------------------------------- -->
+        <template v-for="(item, i) in sidebarMenu" :key="i">
+          <!-- ---------------------------------------------- -->
+          <!---Single Item-->
+          <!-- ---------------------------------------------- -->
+          <v-list-item :to="item.to" rounded="lg" class="mb-1">
+            <template v-slot:prepend>
+              <v-icon :icon="item.icon"></v-icon>
+            </template>
+            <v-list-item-title v-text="item.title"></v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-list>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+  .profile-name{
+    font-size: 18px;
+  }
+  
+</style>
+
+
+Step 23: Create sidebarItems.ts in component/backendComponents/sidebar
+—
+export default [
+    {
+      title: "Dashboard",
+      icon: "mdi-view-dashboard-outline",
+      to: "/backend/dashboard",
+    },
+    {
+      title: "Products",
+      icon: "mdi-storefront-outline",
+      to: "/backend/product",
+    },
+    {
+      title: "Orders",
+      icon: "mdi-cart-outline",
+      to: "/backend/order",
+    },
+    {
+      title: "Reports",
+      icon: "mdi-chart-line",
+      to: "/backend/report",
+    },
+    {
+      title: "Settings",
+      icon: "mdi-cog-outline",
+      to: "/backend/setting",
+    },
+  ]
+
+
+Step 23: Create header
+—
+npx nuxi add component "backendComponents/header/Header"
+
+Then add this code
+—
+<script setup lang="ts">
+import { message, notification, profile } from "./headerItems"
+
+const href = ref(undefined)
+const messages = ref(message)
+const notifications = ref(notification)
+const userprofile = ref(profile)
+
+</script>
+
+<template>
+  <v-menu anchor="bottom end" origin="auto" min-width="300">
+    <template v-slot:activator="{ props }">
+      <div class="d-flex">
+        <!-- ---------------------------------------------- -->
+        <!-- Message -->
+        <!-- ---------------------------------------------- -->
+        <v-btn icon class="ms-3" color="lighten-2">
+          <v-badge color="error" dot>
+            <v-icon>mdi-message</v-icon>
+          </v-badge>
+
+          <v-menu
+            activator="parent"
+            anchor="bottom end"
+            origin="auto"
+            max-width="300"
+          >
+            <v-list class="pa-5" elevation="10" rounded="lg">
+              <h4 class="d-flex">
+                ข้อความ
+                <v-chip label small color="secondary" class="ml-auto">
+                  5 new
+                </v-chip>
+              </h4>
+
+              <v-list-item
+                v-for="(item, i) in messages"
+                class="my-2 pa-3"
+                :key="i"
+                rounded="lg"
+                :value="item"
+                @click="href"
+                :title="item.title"
+                :subtitle="item.desc"
+              >
+                <template v-slot:prepend>
+                    <v-avatar size="50">
+                      <v-img
+                        :src="`/images/users/${item.image}`"
+                        :alt="item.image"
+                        width="50">
+                      </v-img>
+                    </v-avatar
+                  >
+                </template>
+              </v-list-item>
+              <v-btn flat color="primary" class="mt-4" variant="tonal" block
+                >ดูข้อความทั้งหมด</v-btn
+              >
+            </v-list>
+          </v-menu>
+        </v-btn>
+
+        <!-- ---------------------------------------------- -->
+        <!-- Notification -->
+        <!-- ---------------------------------------------- -->
+        <v-btn icon class="ms-3" color="lighten-2">
+          <v-badge color="error" dot>
+            <v-icon>mdi-bell</v-icon>
+          </v-badge>
+
+          <v-menu activator="parent" max-width="300">
+            <v-list class="pa-6" elevation="10" rounded="lg">
+              <h4 class="d-flex">
+                การแจ้งเตือน
+                <v-chip class="ml-auto" label small color="error"> 5 new </v-chip>
+              </h4>
+              <v-list-item
+                class="pa-3 mt-2"
+                v-for="(item, i) in notifications"
+                :key="i"
+                :value="item"
+                @click="href"
+                rounded="lg"
+                :title="item.title"
+                :subtitle="item.desc">
+                <template v-slot:prepend>
+                  <v-btn :color="item.color" icon variant="tonal" elevation="0" class="mr-3">
+                    <v-icon :icon="item.icon" size="24"></v-icon>
+                  </v-btn>
+                </template>
+              </v-list-item>
+              <v-btn block variant="elevated" color="secondary" class="mt-4 py-4">ดูการแจ้งเตือนทั้งหมด</v-btn>
+            </v-list>
+          </v-menu>
+        </v-btn>
+   
+        <!-- ---------------------------------------------- -->
+        <!-- User Profile -->
+        <!-- ---------------------------------------------- -->
+        <v-btn icon class="mx-3">
+          <v-avatar size="35">
+            <img src="/images/users/sirirat.jpg" width="35" alt="Sirirat" />
+          </v-avatar>
+
+          <v-menu activator="parent">
+            <v-list class="pa-6" elevation="10" rounded="lg">
+              <h4 class="font-weight-medium fs-18">โปรไฟล์ของฉัน</h4>
+              <div class="d-flex align-center my-4">
+                <img
+                  src="/images/users/sirirat.jpg"
+                  alt="Julia Roberts"
+                  class="rounded-circle"
+                  width="90"
+                />
+                <div class="ml-4">
+                  <h4 class="font-weight-medium fs-18">Julia Roberts</h4>
+                  <span class="subtitle-2 font-weight-light">Administrator</span>
+                  <div class="d-flex align-center">
+                    <v-icon icon="mdi-email-outline" class="d-flex grey--text" size="16"></v-icon>
+                    <span class="subtitle-2 font-weight-light ml-1">info@itgenius.com</span>
+                  </div>
+                </div>
+              </div>
+              <v-list-item
+                class="pa-3 mb-2"
+                v-for="(item, index) in userprofile"
+                :key="index"
+                :value="index"
+                :title="item.title"
+                :subtitle="item.desc">
+                <template v-slot:prepend>
+                  <v-btn :color="item.color" variant="tonal" icon elevation="0" class="mr-3">
+                    <v-icon :icon="item.icon" size="24"></v-icon>
+                  </v-btn>
+                </template>
+              </v-list-item>
+              <v-btn block color="secondary" variant="tonal" class="mt-4 py-4" to="/auth/login">ออกจากระบบ</v-btn>
+            </v-list>
+          </v-menu>
+        </v-btn>
+      </div>
+    </template>
+  </v-menu>
+</template>
+
+Step 24: Create headerItems.ts in component/backendComponents/header
+—
+const message = [
+    {
+      image: "1.jpg",
+      avatarstatus: "success",
+      title: "Romen Joined the Team!",
+      desc: "Congratulate him",
+      time: "9:30 AM",
+    },
+    {
+      image: "2.jpg",
+      avatarstatus: "warning",
+      title: "New message received",
+      desc: "Salma sent you new message",
+      time: "9:08 AM",
+    },
+    {
+      image: "3.jpg",
+      avatarstatus: "error",
+      title: "New Payment received",
+      desc: "Check your earnings",
+      time: "9:08 AM",
+    },
+    {
+      image: "4.jpg",
+      avatarstatus: "success",
+      title: "Jolly completed tasks",
+      desc: "Assign her new tasks",
+      time: "9:08 AM",
+    },
+  ];
+  
+  const notification = [
+    {
+      color: "error",
+      icon: "mdi-bell-outline",
+      title: "Luanch Admin",
+      desc: "Just see the my new admin!",
+    },
+    {
+      color: "primary",
+      icon: "mdi-bell-outline",
+      title: "Event today",
+      desc: "Just a reminder that you have event",
+    },
+    {
+      color: "warning",
+      icon: "mdi-bell-outline",
+      title: "Settings",
+      desc: "You can customize this template as you want",
+    },
+    {
+      color: "secondary",
+      icon: "mdi-bell-outline",
+      title: "Johny John",
+      desc: "Assign her new tasks",
+    },
+  ]
+  
+  const profile = [
+    {
+      color: "error",
+      icon: "mdi-account-edit",
+      title: "โปรไฟล์",
+      desc: "จัดการข้อมูลบัญชี",
+    },
+    {
+      color: "warning",
+      icon: "mdi-message-settings-outline",
+      title: "ข้อความ",
+      desc: "จัดการข้อความและอีเมล์",
+    },
+    {
+      color: "secondary",
+      icon: "mdi-book-edit-outline",
+      title: "กิจกรรมของฉัน",
+      desc: "ข้อมูลกิจกรรมแต่ละวัน",
+    },
+  ];
+  
+  export { message, profile, notification }
+  
+
+Step 25: Create Layout "backend"
+—
+npx nuxi add layout backend
+
+Then add this code
+—
+<script setup lang="ts">
+
+import { useDisplay } from "vuetify"
+import Sidebar from "~/components/backendComponents/sidebar/Sidebar.vue"
+import Header from "~/components/backendComponents/header/Header.vue"
+
+const drawer = ref(undefined || true)
+const innerW = window.innerWidth;
+const { mdAndUp, mdAndDown } = useDisplay()
+
+onMounted(() => {
+  if (innerW < 950) {
+    drawer.value = !drawer.value
+  }
+})
+
+</script>
+<template>
+  <div>
+    <v-app>
+      <!-- ---------------------------------------------- -->
+      <!---Header -->
+      <!-- ---------------------------------------------- -->
+      <v-app-bar elevation="0" color="primary">
+        <div class="pe-5">
+          <NuxtLink to="/backend/dashboard" class="d-flex brand">
+            NuxtPress
+          </NuxtLink>
+        </div>
+        <v-app-bar-nav-icon class="" @click="drawer = !drawer" />
+        <v-spacer />
+        <!-- ---------------------------------------------- -->
+        <!-- User Profile -->
+        <!-- ---------------------------------------------- -->
+        <Header />
+      </v-app-bar>
+      <v-main>
+        <!-- ---------------------------------------------- -->
+        <!---Sidebar -->
+        <!-- ---------------------------------------------- -->
+        <v-navigation-drawer
+          left
+          :permanent="mdAndUp"
+          elevation="10"
+          app
+          :temporary="mdAndDown"
+          v-model="drawer"
+          expand-on-hover
+        >
+          <Sidebar />
+        </v-navigation-drawer>
+        <v-container fluid class="page-wrapper">
+          <slot />
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+</template>
+
+<style scoped>
+  .brand {
+    font-size: 20px;
+    color: #fff;
+    padding-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+
+Step 26: Create dashboard page
+—
+npx nuxi add page "backend/dashboard"
+
+Then add code
+—
+<script setup lang="ts">
+
+  import CongratulationCard from "@/components/dashboardComponents/modern/congratulation-card/CongratulationCard.vue"
+  import Purchases from "@/components/dashboardComponents/modern/purchases/Purchases.vue"
+  import TotalEarnings from "@/components/dashboardComponents/modern/total-earnings/TotalEarnings.vue"
+  import RevenueUpdates from "@/components/dashboardComponents/modern/revenue-updates/RevenueUpdates.vue"
+  import MonthlyEarnings from "@/components/dashboardComponents/modern/monthly-earnings/MonthlyEarnings.vue"
+  import Customers from "@/components/dashboardComponents/modern/customers/Customers.vue"
+  import TotalSales from "@/components/dashboardComponents/modern/total-sales/TotalSales.vue"
+  import ProductPerformance from "@/components/dashboardComponents/modern/product-performance/ProductPerformance.vue"
+  import BlogCard from "@/components/dashboardComponents/modern/blog-card/BlogCard.vue"
+  import WeeklyStats from "@/components/dashboardComponents/modern/weekly-stats/WeeklyStats.vue"
+  import MedicalProBranding from "@/components/dashboardComponents/ecommerce/medicalpro-branding/MedicalProBranding.vue"
+  import TheProfileCard from "@/components/dashboardComponents/analyticaldash/profile-card/TheProfileCard.vue"
+  import TheMyContacts from "@/components/dashboardComponents/analyticaldash/my-contacts/TheMyContacts.vue"
+  import TheActivityTimeline from "@/components/dashboardComponents/analyticaldash/activity-timeline/TheActivityTimeline.vue"
+
+  definePageMeta({
+    layout: "backend",
+  })
+
+  useHead({
+    title: 'Dashboard',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'Dashboard, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'Dashboard Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+
+</script>
+
+<template>
+  <v-row>
+    <v-col cols="12" sm="12" lg="5">
+      <!-- <DashboardComponentsModernCongratulationCard /> -->
+      <CongratulationCard />
+    </v-col>
+    <v-col cols="12" sm="12" lg="7">
+      <v-row>
+        <v-col lg="5">
+          <Purchases />
+        </v-col>
+        <v-col lg="7">
+          <TotalEarnings />
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col cols="12" sm="12" lg="8">
+      <RevenueUpdates />
+    </v-col>
+    <v-col cols="12" sm="12" lg="4">
+      <MonthlyEarnings />
+      <Customers />
+    </v-col>
+    <v-col cols="12" sm="12" lg="4">
+      <TotalSales />
+    </v-col>
+    <v-col cols="12" sm="12" lg="8">
+      <ProductPerformance />
+    </v-col>
+
+    <v-col cols="12" sm="12" lg="4">
+      <TheProfileCard />
+      <div class="mt-7"></div>
+      <TheMyContacts />
+    </v-col>
+    <v-col cols="12" sm="12" lg="8">
+      <TheActivityTimeline />
+    </v-col>
+    <v-col cols="12" lg="4">
+      <BlogCard />
+    </v-col>
+    <v-col cols="12" lg="4">
+      <WeeklyStats />
+    </v-col>
+    <v-col cols="12" lg="4">
+      <MedicalProBranding />
+    </v-col>
+  </v-row>
+</template>
+
+Step 27: Install Apexchart Dependecie
+—
+npm install apexcharts@3.35.0
+npm install vue3-apexcharts@1.4.1
+
+Step 28: Create plugins/apexcharts.ts
+—
+import VueApexCharts from "vue3-apexcharts"
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(VueApexCharts);
+})
+
+Step 29: Create product page
+—
+npx nuxi add page "backend/product"
+
+Then add code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "backend",
+  })
+
+  useHead({
+    title: 'Product',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'Product, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'Product Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+</script>
+
+<template>
+  <div>
+    <h1>Product</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat error eos excepturi, explicabo nesciunt repudiandae aperiam qui maxime sunt earum, officia sequi eius. Accusamus repellendus dolor veniam facilis cumque cupiditate!</p>
+  </div>
+</template>
+
+<style scoped></style>
+
+
+Step 30: Create order page
+—
+npx nuxi add page "backend/order"
+
+Then add code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "backend",
+  })
+
+  useHead({
+    title: 'Order',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'Order, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'Order Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+</script>
+
+<template>
+  <div>
+    <h1>Order</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui rem praesentium a? Iusto dolore officiis aspernatur, exercitationem, debitis quam excepturi et odit voluptatum quos, aliquid fuga quo cumque itaque nisi.</p>
+  </div>
+</template>
+
+<style scoped></style>
+
+
+Step 31: Create report page
+—
+npx nuxi add page "backend/report"
+
+Then add code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "backend",
+  })
+
+  useHead({
+    title: 'Report',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'Report, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'Report Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+</script>
+
+<template>
+  <div>
+    <h1>Report</h1>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis similique dolorum quisquam voluptate atque laborum est aliquam? Veritatis dolor, labore eligendi ullam ipsum animi corporis hic non nam est laborum.</p>
+  </div>
+</template>
+
+<style scoped></style>
+
+
+Step 32: Create setting page
+—
+npx nuxi add page "backend/setting"
+
+Then add code
+—
+<script setup lang="ts">
+
+  definePageMeta({
+    layout: "backend",
+  })
+
+  useHead({
+    title: 'Setting',
+    meta: [
+      { 
+        name: 'keywords', 
+        content: 'Setting, Nuxt 3, Backend'
+      },
+      {
+        name: 'Description',
+        content: 'Setting Nuxt 3,  IT Genius Engineering'
+      }
+    ]
+  })
+</script>
+
+<template>
+  <div>
+    <h1>Setting</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime quia atque ipsam suscipit. Error veniam sunt ratione ad iste, doloremque, vitae libero porro, nobis deserunt qui repellendus aperiam? Alias, pariatur!</p>
+  </div>
+</template>
+
+<style scoped></style>

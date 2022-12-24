@@ -1,0 +1,170 @@
+nuxt3-vuetify-workshop
+|
+├── README.md
+├── app.vue
+├── assets
+│   └── scss
+│       ├── _override.scss
+│       ├── layout
+│       │   ├── _container.scss
+│       │   ├── _sidebar.scss
+│       │   └── _topbar.scss
+│       ├── pages
+│       │   └── _dashboards.scss
+│       ├── style.scss
+│       └── variables.scss
+├── components
+│   ├── backendComponents
+│   │   ├── header
+│   │   │   ├── Header.vue
+│   │   │   └── headerItems.ts
+│   │   └── sidebar
+│   │       ├── Sidebar.vue
+│   │       └── sidebarItems.ts
+│   ├── dashboardComponents
+│   │   ├── analyticaldash
+│   │   │   ├── activity-timeline
+│   │   │   │   ├── TheActivityTimeline.vue
+│   │   │   │   ├── TimelineProfile.vue
+│   │   │   │   ├── TimelineSettings.vue
+│   │   │   │   └── TimelineView.vue
+│   │   │   ├── my-contacts
+│   │   │   │   └── TheMyContacts.vue
+│   │   │   └── profile-card
+│   │   │       └── TheProfileCard.vue
+│   │   ├── ecommerce
+│   │   │   └── medicalpro-branding
+│   │   │       └── MedicalProBranding.vue
+│   │   └── modern
+│   │       ├── blog-card
+│   │       │   └── BlogCard.vue
+│   │       ├── congratulation-card
+│   │       │   └── CongratulationCard.vue
+│   │       ├── customers
+│   │       │   ├── Customers.vue
+│   │       │   └── CustomersData.ts
+│   │       ├── monthly-earnings
+│   │       │   ├── MonthlyEarnings.vue
+│   │       │   └── MonthlyEarningsData.ts
+│   │       ├── product-performance
+│   │       │   └── ProductPerformance.vue
+│   │       ├── purchases
+│   │       │   └── Purchases.vue
+│   │       ├── revenue-updates
+│   │       │   ├── RevenueUpdates.vue
+│   │       │   └── RevenueUpdatesData.ts
+│   │       ├── total-earnings
+│   │       │   └── TotalEarnings.vue
+│   │       ├── total-sales
+│   │       │   ├── TotalSales.vue
+│   │       │   └── TotalSalesData.ts
+│   │       └── weekly-stats
+│   │           ├── WeeklyStats.vue
+│   │           └── WeeklyStatsData.ts
+│   └── landing
+│       ├── Footer.vue
+│       ├── Header.vue
+│       └── headerItems.ts
+├── error.vue
+├── layouts
+│   ├── auth.vue
+│   ├── backend.vue
+│   └── default.vue
+├── nuxt.config.ts
+├── package-lock.json
+├── package.json
+├── pages
+│   ├── about.vue
+│   ├── auth
+│   │   ├── forgotpass.vue
+│   │   ├── login.vue
+│   │   └── register.vue
+│   ├── backend
+│   │   ├── dashboard.vue
+│   │   ├── order.vue
+│   │   ├── product.vue
+│   │   ├── report.vue
+│   │   └── setting.vue
+│   ├── blog.vue
+│   ├── contact.vue
+│   ├── demo.vue
+│   └── index.vue
+├── plugins
+│   ├── apexcharts.ts
+│   └── vuetify.ts
+├── public
+│   ├── favicon.ico
+│   └── images
+│       ├── algolia.png
+│       ├── background
+│       │   ├── assets.png
+│       │   ├── blog-bg-2x.jpg
+│       │   ├── error-bg.jpg
+│       │   ├── expense.png
+│       │   ├── income.png
+│       │   ├── login-register.jpg
+│       │   ├── profilebg.jpg
+│       │   ├── sidebar-buynow-bg.svg
+│       │   ├── staff.png
+│       │   ├── u1.jpg
+│       │   ├── u2.jpg
+│       │   ├── u3.jpg
+│       │   ├── u5.jpg
+│       │   ├── user-info.jpg
+│       │   ├── weatherbg.jpg
+│       │   ├── welcome-bg-2x-svg.svg
+│       │   ├── welcome-bg.png
+│       │   └── welcome-bg2-2x-svg.svg
+│       ├── banner
+│       │   └── banner1.jpg
+│       ├── big
+│       │   ├── blog-bg.jpg
+│       │   ├── img1.jpg
+│       │   ├── img2.jpg
+│       │   ├── img3.jpg
+│       │   └── img4.jpg
+│       ├── blog
+│       │   ├── img1.jpg
+│       │   ├── img2.jpg
+│       │   └── img3.jpg
+│       ├── browser
+│       │   ├── chrome-logo.png
+│       │   ├── firefox-logo.png
+│       │   ├── internet-logo.png
+│       │   ├── opera-logo.png
+│       │   ├── photoshop.jpg
+│       │   ├── safari-logo.png
+│       │   └── sketch.jpg
+│       ├── form-banner
+│       │   └── form-banner1.png
+│       ├── landingpage
+│       │   ├── banner-img.png
+│       │   └── comingsoon.jpg
+│       ├── logo-icon.png
+│       ├── logos
+│       │   ├── dark-logo-icon.svg
+│       │   ├── dark-logo-text.svg
+│       │   ├── white-logo-icon.svg
+│       │   └── white-logo-text.svg
+│       ├── products
+│       │   ├── 1.jpg
+│       │   ├── 2.jpg
+│       │   ├── 3.jpg
+│       │   └── 4.jpg
+│       ├── sidebar-buynow-bg.svg
+│       └── users
+│           ├── 1.jpg
+│           ├── 2.jpg
+│           ├── 3.jpg
+│           ├── 4.jpg
+│           ├── 5.jpg
+│           ├── 6.jpg
+│           ├── 7.jpg
+│           ├── 8.jpg
+│           ├── astrro.png
+│           ├── businessmen.png
+│           ├── happy.png
+│           ├── sirirat.jpg
+│           ├── user.jpg
+│           └── user2.jpg
+└── tsconfig.json
