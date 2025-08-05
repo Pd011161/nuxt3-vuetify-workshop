@@ -144,5 +144,3 @@ const userprofile = ref(profile)
     </template>
   </v-menu>
 </template>
-
-<style scoped></style>

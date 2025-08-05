@@ -1,5 +1,3 @@
-Then add code
-—
 <script setup lang="ts">
 
   definePageMeta({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import sidebarItems from "./sidebarItems"
+import sidebarItems from "./sidebarItems";
 const sidebarMenu = ref(sidebarItems)
 
 </script>
@@ -45,5 +45,4 @@ const sidebarMenu = ref(sidebarItems)
   .profile-name{
     font-size: 18px;
   }
-  
 </style>

@@ -2,14 +2,14 @@
     useHead({
         title: 'หน้าหลัก',
         meta: [
-          { 
+            { 
             name: 'keywords', 
             content: 'หน้าหลัก, Nuxt 3, Backend'
-          },
-          {
+            },
+            {
             name: 'Description',
             content: 'หน้าหลัก Nuxt 3,  IT Genius Engineering'
-          }
+            }
         ]
     })
 </script>
@@ -186,5 +186,4 @@
     font-size: 35px;
   }
 }
-
 </style>

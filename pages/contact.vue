@@ -1,4 +1,3 @@
-—
 <script lang="ts" setup>
 
     const data = ref({

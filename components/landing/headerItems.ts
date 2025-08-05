@@ -19,4 +19,4 @@ export default [
       title: "เข้าสู่ระบบ",
       to: "/auth/login",
     },
-]
+  ]

@@ -78,4 +78,3 @@ const message = [
   ];
   
   export { message, profile, notification }
-  

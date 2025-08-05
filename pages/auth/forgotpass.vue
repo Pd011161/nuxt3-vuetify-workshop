@@ -18,9 +18,8 @@
     ]
   })
 
-  const valid = ref(true)
-  const email = ref("")
-  
+  const valid = ref(true);
+  const email = ref("");
   const emailRules = ref([
     (v: string) => !!v || "ต้องป้อนอีเมล์",
     (v: string) => /.+@.+\..+/.test(v) || "รูปแบบอีเมล์ไม่ถูกต้อง",
@@ -71,5 +70,3 @@
     </v-row>
   </v-container>
 </template>
-
-<style scoped></style>

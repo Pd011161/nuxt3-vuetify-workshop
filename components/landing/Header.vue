@@ -4,14 +4,15 @@
   import { useDisplay } from "vuetify"
 
   const drawer = ref(false)
-  const innerW = window.innerWidth;
-  const { mdAndUp, mdAndDown } = useDisplay()
+  // const innerW = window.innerWidth;
 
-  onMounted(() => {
-    if (innerW > 950) {
-      drawer.value = false
-    }
-  })
+  const { mdAndUp} = useDisplay()
+
+  // onMounted(() => {
+  //   if (innerW > 950) {
+  //     drawer.value = false
+  //   }
+  // })
 
   const headerMenu = ref(headerItems)
 
@@ -33,30 +34,30 @@
             </v-col>
 
             <v-col class="d-none d-sm-block text-end" sm="12" md="12" lg="8">
-                <v-btn class="menu" v-for="(item, i) in headerMenu" :to="item.to" :key="i">{{ item.title }}</v-btn>
+                <v-btn class="menu" v-for="(item, i) in headerMenu" :to="item.to">{{ item.title }}</v-btn>
                 <v-btn class="menu" icon><v-icon>mdi-magnify</v-icon></v-btn>
             </v-col>
 
           </v-row>
         </v-container>
       </v-app-bar>
-      
+      <ClientOnly>
       <!-- Mobile Menu -->
-      <v-navigation-drawer
-        left
-        elevation="10"
-        app
-        :temporary="mdAndUp"
-        v-model="drawer"
-        expand-on-hover
-      >
-        <v-list>
-          <v-list-item v-for="(item, i) in headerMenu" :to="item.to" class="mb-1" :key="i">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-      
+        <v-navigation-drawer
+          left
+          elevation="10"
+          app
+          :temporary="mdAndUp"
+          v-model="drawer"
+          expand-on-hover
+        >
+          <v-list>
+            <v-list-item v-for="(item, i) in headerMenu" :to="item.to" class="mb-1" :key="i">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+      </ClientOnly>
     </div>
 
 </template>

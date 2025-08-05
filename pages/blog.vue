@@ -12,6 +12,28 @@
             }
         ]
     })
+
+    //  Read API UseFetch
+    const { data:products, pedding} = await useFetch('https://www.itgenius.co.th/sandbox_api/mrta_flutter_api/public/api/news')
+    // console.log(products)
+
+    const getDay = (date: string) => {
+      const d = new Date(date);
+      // return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' });
+      return d.toLocaleDateString('en-EN', { day: '2-digit'});
+
+    };
+
+    const getMonth = (date: string) => {
+      const d = new Date(date);
+      return d.toLocaleDateString('en-EN', { month: 'short'});
+    };
+
+    const getYear = (date: string) => {
+      const d = new Date(date);
+      return d.toLocaleDateString('en-EN', { year:  'numeric'});
+    };
+
 </script>
 
 <template>
@@ -29,136 +51,45 @@
             </v-col>
             </v-row>
         </div>
-
-        <v-container>
-        <v-row class="mt-13" justify="center">
-          <v-col cols="12" md="6" lg="4">
-            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
-              <div class="position-relative mb-5">
-                <a href="#">
-                  <v-img src="/images/blog/img1.jpg"
-                    alt="blog"
-                    class="blog-img"
-                  />
-                </a>
-                <div class="date-badge bg-info-grediant">
-                  Oct <span>23</span>
-                </div>
-              </div>
-              <div class="pa-5">
-                <a
-                  href="#"
-                  class="
-                    blog-title
-                    text-decoration-none
-                    font-weight-medium font-18
-                  "
-                  >Learn from small things to create something bigger thing in blog.</a
-                >
-                <p class="mt-10 mb-10">
-                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
-                </p>
-                <a
-                  href="#"
-                  class="
-                    text-themecolor
-                    linking
-                    text-decoration-none
-                    d-flex
-                    align-center
-                  "
-                >
-                  อ่านต่อ  &nbsp; <i class="mdi mdi-arrow-right"></i>
-                </a>
-              </div>
-            </v-card>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
-              <div class="position-relative mb-5">
-                <a href="#">
-                  <v-img src="/images/blog/img2.jpg"
-                    alt="blog"
-                    class="blog-img"
-                  />
-                </a>
-                <div class="date-badge bg-info-grediant">
-                  Oct <span>23</span>
-                </div>
-              </div>
-              <div class="pa-5">
-                <a
-                  href="#"
-                  class="
-                    blog-title
-                    text-decoration-none
-                    font-weight-medium 
-                    font-18
-                  "
-                  >New Seminar on Newest Food Recipe from World’s Best</a
-                >
-                <p class="mt-10 mb-10">
-                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
-                </p>
-                <a
-                  href="#"
-                  class="
-                    text-themecolor
-                    linking
-                    text-decoration-none
-                    d-flex
-                    align-center
-                  "
-                >
-                  อ่านต่อ  &nbsp;<i class="mdi mdi-arrow-right"></i>
-                </a>
-              </div>
-            </v-card>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <v-card elevation="0" class="blog-card overflow-hidden mb-5">
-              <div class="position-relative mb-5">
-                <a href="#">
-                  <v-img src="/images/blog/img3.jpg"
-                    alt="blog"
-                    class="blog-img"
-                  />
-                </a>
-                <div class="date-badge bg-info-grediant">
-                  Oct <span>23</span>
-                </div>
-              </div>
-              <div class="pa-5">
-                <a
-                  href="#"
-                  class="
-                    blog-title
-                    text-decoration-none
-                    font-weight-medium 
-                    font-18
-                  "
-                  >You should have eagle’s eye on new trends and techonogies</a
-                >
-                <p class="mt-10 mb-10">
-                  Business Park, Opp. Corns Sam Restaurant, New Yoark, US
-                </p>
-                <a
-                  href="#"
-                  class="
-                    text-themecolor
-                    linking
-                    text-decoration-none
-                    d-flex
-                    align-center
-                  "
-                >
-                  อ่านต่อ  &nbsp; <i class="mdi mdi-arrow-right"></i>
-                </a>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+        <ClientOnly>
+          <v-container>
+            <v-row class="mt-13" justify="center" v-if="!pedding">
+              <v-col cols="12" md="6" lg="4" v-for="(product, index) in products" :key="index">
+                <v-card elevation="0" class="blog-card overflow-hidden mb-5" :to="`/blogdetail/${product.id}`">
+                  <div class="position-relative mb-5">
+                    
+                      <v-img :src="product.imageurl"
+                        alt="blog"
+                        class="blog-img"
+                      />
+                    
+                    <div class="date-badge bg-info-grediant">
+                      {{ getMonth(product.created_at) }} 
+                      <span>{{ getDay(product.created_at) }}</span>
+                    </div>
+                  </div>
+                  <div class="pa-5">
+                    <v-card-title
+                      href="#"
+                      class="
+                        blog-title
+                        text-decoration-none
+                        font-weight-medium font-18
+                      ">
+                      {{ product.topic }}
+                    </v-card-title>
+                    <v-card-subtitle class="mt-10 mb-10">
+                      {{ product.detail}}
+                    </v-card-subtitle>
+                  
+                  </div>
+                </v-card>
+              </v-col>
+              
+            </v-row>
+            <div class="test-center py-10" v-else>Loading...</div>
+          </v-container>
+        </ClientOnly>
 
     </div>
 </template>
